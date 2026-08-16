@@ -1,0 +1,159 @@
+# ZHT Mihomo Pro V5
+# 适用于 Clash Party / Mihomo Party / Clash Verge Rev 等 Mihomo 内核客户端。
+# 使用前只需要把下方 subscription-url 改为你的机场订阅链接，然后在客户端更新订阅。
+
+mixed-port: 7890
+allow-lan: false
+bind-address: "*"
+mode: rule
+log-level: warning
+ipv6: false
+tcp-concurrent: true
+unified-delay: true
+find-process-mode: strict
+global-client-fingerprint: chrome
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+geodata-mode: true
+geodata-loader: memconservative
+geo-auto-update: true
+geo-update-interval: 72
+geox-url:
+  geoip: https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat
+  geosite: https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
+  mmdb: https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb
+
+# DNS 分为三层：本地 DNS、国内域名 DNS、代理节点域名 DNS。
+# proxy-server-nameserver 尤其重要：它不依赖代理本身来解析机场节点域名。
+dns:
+  enable: true
+  listen: 127.0.0.1:1053
+  ipv6: false
+  prefer-h3: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - "*.lan"
+    - "+.local"
+    - "+.localdomain"
+    - "localhost.ptlogin2.qq.com"
+    - "time.*.com"
+    - "time.*.gov"
+    - "time.windows.com"
+    - "ntp.*.com"
+    - "stun.*.*"
+    - "xbox.*.microsoft.com"
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  nameserver-policy:
+    "geosite:cn,private":
+      - https://dns.alidns.com/dns-query
+      - https://doh.pub/dns-query
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - https://dns.google/dns-query
+  fallback:
+    - https://1.0.0.1/dns-query
+    - tls://8.8.8.8:853
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    geosite:
+      - gfw
+
+proxy-providers:
+  subscription:
+    type: http
+    url: "https://example.com/replace-with-your-subscription-url"
+    path: ./providers/subscription.yaml
+    interval: 3600
+    proxy: DIRECT
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 600
+      timeout: 5000
+      lazy: true
+
+proxy-groups:
+  - name: 节点选择
+    type: select
+    proxies:
+      - 自动选择
+      - 故障转移
+      - DIRECT
+    use:
+      - subscription
+
+  - name: 自动选择
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 100
+    lazy: true
+    use:
+      - subscription
+
+  - name: 故障转移
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    lazy: true
+    use:
+      - subscription
+
+  - name: Google
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - DIRECT
+
+  - name: GitHub
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - DIRECT
+
+  - name: OpenAI
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - DIRECT
+
+  - name: 流媒体
+    type: select
+    proxies:
+      - 节点选择
+      - 自动选择
+      - DIRECT
+
+  - name: 国内直连
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+
+rules:
+  - GEOSITE,category-ads-all,REJECT
+  - GEOSITE,private,DIRECT
+  - GEOIP,private,DIRECT,no-resolve
+  - GEOSITE,openai,OpenAI
+  - GEOSITE,google,Google
+  - GEOSITE,github,GitHub
+  - GEOSITE,youtube,流媒体
+  - GEOSITE,netflix,流媒体
+  - GEOSITE,spotify,流媒体
+  - GEOSITE,cn,国内直连
+  - GEOIP,CN,国内直连,no-resolve
+  - MATCH,节点选择
