@@ -1,0 +1,606 @@
+# =========================================================
+# ZHT Mihomo Pro V3 / Clash Verge Rev
+# 节点命名与 ISP 优化版
+# =========================================================
+# 根据实际订阅节点命名优化：
+# 香港1-4 / 香港 ISP / 台湾1-4 / 新加坡1-4 / 日本1-4
+# 美国1-4 / 韩国 ISP / 加拿大 ISP / 澳洲 ISP / 马来西亚 ISP
+# 同时排除：到期时间、剩余流量、官网、邀请码、订阅提示等信息项
+# =========================================================
+
+mode: rule
+mixed-port: 7897
+allow-lan: false
+log-level: info
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: strict
+
+# ---------------- DNS ----------------
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - '*.lan'
+    - '*.local'
+    - localhost
+    - '*.localhost'
+    - 'time.*.com'
+    - 'time.*.gov'
+    - 'ntp.*.com'
+    - '+.push.apple.com'
+    - '+.steamcontent.com'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  nameserver:
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  nameserver-policy:
+    'geosite:private': system
+    'geosite:cn':
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    '+.lan': system
+
+# ---------------- GEO ----------------
+geodata-mode: true
+geox-url:
+  geoip: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/geoip.dat
+  geosite: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/geosite.dat
+  mmdb: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country-lite.mmdb
+
+# ---------------- Proxy Groups ----------------
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - ⚡ ISP优选
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🇰🇷 韩国节点
+      - 🌍 其他地区
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 🚀 手动切换
+    type: select
+    include-all: true
+
+  - name: ♻️ 自动选择
+    type: url-test
+    include-all: true
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 80
+    timeout: 5000
+    lazy: false
+
+  - name: 🧪 测试节点
+    type: url-test
+    include-all: true
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 60
+    tolerance: 0
+    timeout: 5000
+    lazy: false
+
+  # ISP / 专线优选：只从名称明确标注 ISP、IEPL、IPLC、专线、家宽的节点中测速
+  - name: ⚡ ISP优选
+    type: url-test
+    include-all: true
+    filter: '(?i)(ISP|IEPL|IPLC|专线|家宽|原生|Dedicated|Residential)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  # ---------------- Regional Groups ----------------
+  - name: 🇭🇰 香港节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(香港|港|HK|Hong ?Kong|HongKong)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇨🇳 台湾节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(台湾|台|TW|Taiwan|Taipei|台北)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇸🇬 狮城节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(新加坡|狮城|SG|Singapore)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇯🇵 日本节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(日本|东京|大阪|埼玉|川日|泉日|沪日|深日|JP|Japan|Tokyo|Osaka)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇺🇲 美国节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|USA|United States|Los Angeles|Seattle)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇰🇷 韩国节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(韩国|首尔|韩|韓|KR|KOR|Korea|Seoul)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🌍 其他地区
+    type: url-test
+    include-all: true
+    filter: '(?i)(俄罗斯|加拿大|印度|印度尼西亚|土耳其|奥地利|希腊|德国|澳大利亚|爱尔兰|瑞典|瑞士|芬兰|英国|菲律宾|葡萄牙|西班牙|阿联酋|马来西亚|法国|泰国|俄罗斯|加拿大|Australia|Canada|Germany|France|UK|Spain|Sweden|Switzerland|Finland|Thailand|Malaysia|UAE|Austria|Greece|Ireland|Portugal|Philippines|Turkey|India|Indonesia|Russia)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 80
+    timeout: 5000
+    lazy: true
+
+  # ---------------- ISP Region Groups ----------------
+  - name: 🇭🇰 香港ISP
+    type: url-test
+    include-all: true
+    filter: '(?i)(香港\s*ISP|HK\s*ISP|Hong ?Kong.*ISP)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇰🇷 韩国ISP
+    type: url-test
+    include-all: true
+    filter: '(?i)(韩国\s*ISP|KR\s*ISP|Korea.*ISP)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇨🇦 加拿大ISP
+    type: url-test
+    include-all: true
+    filter: '(?i)(加拿大\s*ISP|Canada.*ISP)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇦🇺 澳洲ISP
+    type: url-test
+    include-all: true
+    filter: '(?i)(澳大利亚\s*ISP|澳洲\s*ISP|Australia.*ISP)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  - name: 🇲🇾 马来西亚ISP
+    type: url-test
+    include-all: true
+    filter: '(?i)(马来西亚\s*ISP|Malaysia.*ISP)'
+    url: https://cp.cloudflare.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 5000
+    lazy: true
+
+  # ---------------- Service Groups ----------------
+  - name: 💬 OpenAI
+    type: select
+    proxies:
+      - 🇺🇲 美国节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📲 Telegram
+    type: select
+    proxies:
+      - 🇸🇬 狮城节点
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📹 YouTube
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 🎥 Netflix
+    type: select
+    proxies:
+      - 🎥 奈飞节点
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 🎥 奈飞节点
+    type: url-test
+    include-all: true
+    filter: '(?i)(NF|奈飞|Netflix|解锁|流媒体|Media|Disney|HBO|流媒体解锁)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.netflix.com/generate_204
+    interval: 300
+    tolerance: 80
+    timeout: 5000
+    lazy: true
+
+  - name: 📺 巴哈姆特
+    type: select
+    proxies:
+      - 🇨🇳 台湾节点
+      - 🇭🇰 香港节点
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📺 哔哩哔哩
+    type: select
+    proxies:
+      - DIRECT
+      - 🇨🇳 台湾节点
+      - 🇭🇰 香港节点
+      - ♻️ 自动选择
+
+  - name: Ⓜ️ Microsoft
+    type: select
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🇺🇲 美国节点
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+
+  - name: 🍎 Apple
+    type: select
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇺🇲 美国节点
+      - 🇯🇵 日本节点
+
+  - name: 🎮 游戏平台
+    type: select
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+
+  - name: 🌍 国外媒体
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - ⚡ ISP优选
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🌍 其他地区
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 🌏 国内媒体
+    type: select
+    proxies:
+      - DIRECT
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - ♻️ 自动选择
+      - 🚀 手动切换
+
+  - name: 🛑 广告拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 🍃 应用净化
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🚀 手动切换
+
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - ⚡ ISP优选
+      - DIRECT
+      - 🚀 手动切换
+
+# ---------------- Rule Providers ----------------
+rule-providers:
+  LAN:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list
+    path: ./ruleset/ZHT-LAN.list
+    interval: 86400
+
+  UnBan:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list
+    path: ./ruleset/ZHT-UnBan.list
+    interval: 86400
+
+  BanAD:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
+    path: ./ruleset/ZHT-BanAD.list
+    interval: 86400
+
+  BanProgramAD:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list
+    path: ./ruleset/ZHT-BanProgramAD.list
+    interval: 86400
+
+  OpenAI:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list
+    path: ./ruleset/ZHT-OpenAI.list
+    interval: 86400
+
+  Telegram:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list
+    path: ./ruleset/ZHT-Telegram.list
+    interval: 86400
+
+  YouTube:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/YouTube.list
+    path: ./ruleset/ZHT-YouTube.list
+    interval: 86400
+
+  Netflix:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Netflix.list
+    path: ./ruleset/ZHT-Netflix.list
+    interval: 86400
+
+  Bahamut:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bahamut.list
+    path: ./ruleset/ZHT-Bahamut.list
+    interval: 86400
+
+  BilibiliHMT:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/BilibiliHMT.list
+    path: ./ruleset/ZHT-BilibiliHMT.list
+    interval: 86400
+
+  Bilibili:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bilibili.list
+    path: ./ruleset/ZHT-Bilibili.list
+    interval: 86400
+
+  ChinaMedia:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaMedia.list
+    path: ./ruleset/ZHT-ChinaMedia.list
+    interval: 86400
+
+  ProxyMedia:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list
+    path: ./ruleset/ZHT-ProxyMedia.list
+    interval: 86400
+
+  ProxyGFW:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list
+    path: ./ruleset/ZHT-ProxyGFW.list
+    interval: 86400
+
+  ChinaDomain:
+    type: http
+    behavior: domain
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list
+    path: ./ruleset/ZHT-ChinaDomain.list
+    interval: 86400
+
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list
+    path: ./ruleset/ZHT-ChinaCompanyIp.list
+    interval: 86400
+
+  ChinaZHT:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/China.list
+    path: ./ruleset/ZHT-China.list
+    interval: 86400
+
+  Microsoft:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list
+    path: ./ruleset/ZHT-Microsoft.list
+    interval: 86400
+
+  OneDrive:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/OneDrive.list
+    path: ./ruleset/ZHT-OneDrive.list
+    interval: 86400
+
+  Apple:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list
+    path: ./ruleset/ZHT-Apple.list
+    interval: 86400
+
+rules:
+  # Local / bypass
+  - RULE-SET,LAN,🎯 全球直连
+  - RULE-SET,UnBan,🎯 全球直连
+
+  # Ads
+  - RULE-SET,BanAD,🛑 广告拦截
+  - RULE-SET,BanProgramAD,🍃 应用净化
+
+  # AI / Messaging - placed early for deterministic routing
+  - RULE-SET,OpenAI,💬 OpenAI
+  - RULE-SET,Telegram,📲 Telegram
+
+  # Streaming
+  - RULE-SET,YouTube,📹 YouTube
+  - RULE-SET,Netflix,🎥 Netflix
+  - RULE-SET,Bahamut,📺 巴哈姆特
+  - RULE-SET,BilibiliHMT,📺 哔哩哔哩
+  - RULE-SET,Bilibili,📺 哔哩哔哩
+  - RULE-SET,ChinaMedia,🌏 国内媒体
+  - RULE-SET,ProxyMedia,🌍 国外媒体
+
+  # Microsoft / Apple
+  - RULE-SET,Microsoft,Ⓜ️ Microsoft
+  - RULE-SET,OneDrive,Ⓜ️ Microsoft
+  - RULE-SET,Apple,🍎 Apple
+
+  # Global proxy
+  - RULE-SET,ProxyGFW,🚀 节点选择
+
+  # China direct - custom China.list first
+  - RULE-SET,ChinaZHT,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+
+  # Final CN IP fallback
+  - GEOIP,CN,🎯 全球直连,no-resolve
+  - MATCH,🐟 漏网之鱼
