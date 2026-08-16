@@ -1,0 +1,42 @@
+name: Fix V3 service icons
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix-icons:
+    if: github.event.head_commit.message != 'chore: fix V3 service icons'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Replace broken icon URLs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('mihomo/ZHT_Mihomo_Pro_V3.yaml')
+          s = p.read_text(encoding='utf-8')
+          replacements = {
+              'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Gemini.png': 'https://cdn.jsdelivr.net/gh/guaishouxiaoqi/icons@master/Color/Gemini.png',
+              'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Claude.png': 'https://cdn.jsdelivr.net/gh/ke1ewang/Qi@master/Claude.png',
+              'https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/OpenAI.png': 'https://raw.githubusercontent.com/Orz-3/mini/master/Color/OpenAI.png',
+          }
+          for old, new in replacements.items():
+              s = s.replace(old, new)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit and remove temporary workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add mihomo/ZHT_Mihomo_Pro_V3.yaml
+          git rm .github/workflows/fix-v3-icons.yml
+          git diff --cached --quiet && exit 0 || true
+          git commit -m 'fix: repair V3 service group icons'
+          git push
