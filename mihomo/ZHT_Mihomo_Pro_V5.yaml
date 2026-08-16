@@ -1,159 +1,653 @@
-# ZHT Mihomo Pro V5
-# 适用于 Clash Party / Mihomo Party / Clash Verge Rev 等 Mihomo 内核客户端。
-# 使用前只需要把下方 subscription-url 改为你的机场订阅链接，然后在客户端更新订阅。
-
-mixed-port: 7890
-allow-lan: false
-bind-address: "*"
+# =========================================================
+# ZHT Mihomo Pro V5 / Clash Party
+# 基于 V4 保留完整策略组与规则，仅优化 Clash Party 测试兼容性
+# =========================================================
 mode: rule
-log-level: warning
+mixed-port: 7897
+allow-lan: false
+log-level: info
 ipv6: false
-tcp-concurrent: true
 unified-delay: true
+tcp-concurrent: true
 find-process-mode: strict
-global-client-fingerprint: chrome
 
-profile:
-  store-selected: true
-  store-fake-ip: true
-
-geodata-mode: true
-geodata-loader: memconservative
-geo-auto-update: true
-geo-update-interval: 72
-geox-url:
-  geoip: https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat
-  geosite: https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
-  mmdb: https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb
-
-# DNS 分为三层：本地 DNS、国内域名 DNS、代理节点域名 DNS。
-# proxy-server-nameserver 尤其重要：它不依赖代理本身来解析机场节点域名。
 dns:
   enable: true
-  listen: 127.0.0.1:1053
   ipv6: false
-  prefer-h3: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter-mode: blacklist
   fake-ip-filter:
-    - "*.lan"
-    - "+.local"
-    - "+.localdomain"
-    - "localhost.ptlogin2.qq.com"
-    - "time.*.com"
-    - "time.*.gov"
-    - "time.windows.com"
-    - "ntp.*.com"
-    - "stun.*.*"
-    - "xbox.*.microsoft.com"
+    - '*.lan'
+    - '*.local'
+    - localhost
+    - '*.localhost'
+    - 'time.*.com'
+    - 'time.*.gov'
+    - 'ntp.*.com'
+    - '+.push.apple.com'
+    - '+.steamcontent.com'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
   proxy-server-nameserver:
-    - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
-  nameserver-policy:
-    "geosite:cn,private":
-      - https://dns.alidns.com/dns-query
-      - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
   nameserver:
-    - https://1.1.1.1/dns-query
-    - https://dns.google/dns-query
-  fallback:
-    - https://1.0.0.1/dns-query
-    - tls://8.8.8.8:853
-  fallback-filter:
-    geoip: true
-    geoip-code: CN
-    geosite:
-      - gfw
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  nameserver-policy:
+    'geosite:private': system
+    'geosite:cn':
+      - https://doh.pub/dns-query
+      - https://dns.alidns.com/dns-query
+    '+.lan': system
 
-proxy-providers:
-  subscription:
-    type: http
-    url: "https://example.com/replace-with-your-subscription-url"
-    path: ./providers/subscription.yaml
-    interval: 3600
-    proxy: DIRECT
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 600
-      timeout: 5000
-      lazy: true
+geodata-mode: true
+geox-url:
+  geoip: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/geoip.dat
+  geosite: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/geosite.dat
+  mmdb: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/country-lite.mmdb
 
 proxy-groups:
-  - name: 节点选择
+  - name: 🚀 节点选择
     type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/rocket.png
     proxies:
-      - 自动选择
-      - 故障转移
+      - ♻️ 自动选择
+      - 🌐 Google
+      - ✨ Gemini
+      - 🤖 Claude
+      - 💻 GitHub
+      - 🎵 Spotify
+      - 🎵 TikTok
+      - ⚡ ISP优选
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🇰🇷 韩国节点
+      - 🌍 其他地区
+      - 🚀 手动切换
       - DIRECT
-    use:
-      - subscription
 
-  - name: 自动选择
+  - name: 🚀 手动切换
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/zhuanyi.png
+    include-all: true
+
+  - name: ♻️ 自动选择
     type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/chaxun.png
+    include-all: true
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
     url: https://www.gstatic.com/generate_204
     interval: 300
-    tolerance: 100
-    lazy: true
-    use:
-      - subscription
+    tolerance: 80
+    timeout: 10000
+    lazy: false
 
-  - name: 故障转移
-    type: fallback
+  - name: ⚡ ISP优选
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/lightning.png
+    include-all: true
+    filter: '(?i)(ISP|IEPL|IPLC|专线|家宽|原生|Dedicated|Residential)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
     url: https://www.gstatic.com/generate_204
     interval: 300
+    tolerance: 60
+    timeout: 10000
     lazy: true
-    use:
-      - subscription
 
-  - name: Google
+  - name: 🇭🇰 香港节点
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Hongkong.png
+    include-all: true
+    filter: '(?i)(香港|港|HK|Hong ?Kong|HongKong)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🇨🇳 台湾节点
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/taiwan.png
+    include-all: true
+    filter: '(?i)(台湾|台|TW|Taiwan|Taipei|台北)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🇸🇬 狮城节点
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/singapore.png
+    include-all: true
+    filter: '(?i)(新加坡|狮城|SG|Singapore)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🇯🇵 日本节点
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Japan.png
+    include-all: true
+    filter: '(?i)(日本|东京|大阪|埼玉|川日|泉日|沪日|深日|JP|Japan|Tokyo|Osaka)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🇺🇲 美国节点
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/US.png
+    include-all: true
+    filter: '(?i)(美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|USA|United States|Los Angeles|Seattle)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🇰🇷 韩国节点
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Korea.png
+    include-all: true
+    filter: '(?i)(韩国|首尔|韩|韓|KR|KOR|Korea|Seoul)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🌍 其他地区
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/quanqiu.png
+    include-all: true
+    filter: '(?i)(俄罗斯|加拿大|印度|印度尼西亚|土耳其|奥地利|希腊|德国|澳大利亚|爱尔兰|瑞典|瑞士|芬兰|英国|菲律宾|葡萄牙|西班牙|阿联酋|马来西亚|法国|泰国|Australia|Canada|Germany|France|UK|Spain|Sweden|Switzerland|Finland|Thailand|Malaysia|UAE|Austria|Greece|Ireland|Portugal|Philippines|Turkey|India|Indonesia|Russia)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 80
+    timeout: 10000
+    lazy: true
+
+  - name: 🇭🇰 香港ISP
+    type: url-test
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/01Country/Hongkong(2).png
+    include-all: true
+    filter: '(?i)(香港\s*ISP|HK\s*ISP|Hong ?Kong.*ISP)'
+    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 60
+    timeout: 10000
+    lazy: true
+
+  - name: 🌐 Google
     type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/google(1).png
     proxies:
-      - 节点选择
-      - 自动选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
       - DIRECT
 
-  - name: GitHub
+  - name: ✨ Gemini
     type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/gemini.png
     proxies:
-      - 节点选择
-      - 自动选择
+      - 🇺🇲 美国节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - 🌐 Google
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
       - DIRECT
 
-  - name: OpenAI
+  - name: 🤖 Claude
     type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/claude.png
     proxies:
-      - 节点选择
-      - 自动选择
+      - 🇺🇲 美国节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
       - DIRECT
 
-  - name: 流媒体
+  - name: 💻 GitHub
     type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/github.png
     proxies:
-      - 节点选择
-      - 自动选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
       - DIRECT
 
-  - name: 国内直连
+  - name: 🎵 Spotify
     type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/spotify(green).png
+    proxies:
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 🎵 TikTok
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/tiktok.png
+    proxies:
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🇨🇳 台湾节点
+      - 🇭🇰 香港节点
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 💬 OpenAI
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/chatgpt4.0.png
+    proxies:
+      - 🇺🇲 美国节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📲 Telegram
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/telegram.png
+    proxies:
+      - 🇭🇰 香港ISP
+      - 🇸🇬 狮城节点
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📹 YouTube
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/youtube.png
+    proxies:
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📺 巴哈姆特
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/bahamute.png
+    proxies:
+      - 🇨🇳 台湾节点
+      - 🇭🇰 香港节点
+      - ♻️ 自动选择
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 📺 哔哩哔哩
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/bilibili.png
     proxies:
       - DIRECT
-      - 节点选择
+      - 🇨🇳 台湾节点
+      - 🇭🇰 香港节点
+      - ♻️ 自动选择
+
+  - name: Ⓜ️ Microsoft
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/04ProxySoft/Copilot.png
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🇺🇲 美国节点
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+
+  - name: 🍎 Apple
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/03CNSoft/apple.png
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇺🇲 美国节点
+      - 🇯🇵 日本节点
+
+  - name: 🎮 游戏平台
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/game.png
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇯🇵 日本节点
+      - 🇸🇬 狮城节点
+      - 🇺🇲 美国节点
+      - ⚡ ISP优选
+      - 🚀 手动切换
+
+  - name: 🌍 国外媒体
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/quanqiu.png
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - ⚡ ISP优选
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - 🇸🇬 狮城节点
+      - 🇯🇵 日本节点
+      - 🇺🇲 美国节点
+      - 🌍 其他地区
+      - 🚀 手动切换
+      - DIRECT
+
+  - name: 🌏 国内媒体
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/home.png
+    proxies:
+      - DIRECT
+      - 🇭🇰 香港节点
+      - 🇨🇳 台湾节点
+      - ♻️ 自动选择
+      - 🚀 手动切换
+
+  - name: 🛑 广告拦截
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/ad.png
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 🍃 应用净化
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/blacklist.png
+    proxies:
+      - REJECT
+      - DIRECT
+
+  - name: 🎯 全球直连
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/direct.png
+    proxies:
+      - DIRECT
+      - ♻️ 自动选择
+      - 🚀 手动切换
+
+  - name: 🐟 漏网之鱼
+    type: select
+    icon: https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/05icon/quanqiu(2).png
+    proxies:
+      - 🚀 节点选择
+      - ♻️ 自动选择
+      - ⚡ ISP优选
+      - DIRECT
+      - 🚀 手动切换
+
+rule-providers:
+  LAN:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list
+    path: ./ruleset/ZHT-LAN.list
+    interval: 86400
+  UnBan:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list
+    path: ./ruleset/ZHT-UnBan.list
+    interval: 86400
+  BanAD:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
+    path: ./ruleset/ZHT-BanAD.list
+    interval: 86400
+  BanProgramAD:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list
+    path: ./ruleset/ZHT-BanProgramAD.list
+    interval: 86400
+  Google:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Google.list
+    path: ./ruleset/ZHT-Google.list
+    interval: 86400
+  GoogleCN:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/GoogleCN.list
+    path: ./ruleset/ZHT-GoogleCN.list
+    interval: 86400
+  GoogleFCM:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/GoogleFCM.list
+    path: ./ruleset/ZHT-GoogleFCM.list
+    interval: 86400
+  Gemini:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.list
+    path: ./ruleset/ZHT-Gemini.list
+    interval: 86400
+  Claude:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Claude/Claude.list
+    path: ./ruleset/ZHT-Claude.list
+    interval: 86400
+  GitHub:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.list
+    path: ./ruleset/ZHT-GitHub.list
+    interval: 86400
+  Spotify:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.list
+    path: ./ruleset/ZHT-Spotify.list
+    interval: 86400
+  TikTok:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TikTok/TikTok.list
+    path: ./ruleset/ZHT-TikTok.list
+    interval: 86400
+  OpenAI:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list
+    path: ./ruleset/ZHT-OpenAI.list
+    interval: 86400
+  Telegram:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list
+    path: ./ruleset/ZHT-Telegram.list
+    interval: 86400
+  YouTube:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/YouTube.list
+    path: ./ruleset/ZHT-YouTube.list
+    interval: 86400
+  Bahamut:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bahamut.list
+    path: ./ruleset/ZHT-Bahamut.list
+    interval: 86400
+  BilibiliHMT:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/BilibiliHMT.list
+    path: ./ruleset/ZHT-BilibiliHMT.list
+    interval: 86400
+  Bilibili:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Bilibili.list
+    path: ./ruleset/ZHT-Bilibili.list
+    interval: 86400
+  ChinaMedia:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaMedia.list
+    path: ./ruleset/ZHT-ChinaMedia.list
+    interval: 86400
+  ProxyMedia:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list
+    path: ./ruleset/ZHT-ProxyMedia.list
+    interval: 86400
+  ProxyGFW:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyGFWlist.list
+    path: ./ruleset/ZHT-ProxyGFW.list
+    interval: 86400
+  ChinaDomain:
+    type: http
+    behavior: domain
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list
+    path: ./ruleset/ZHT-ChinaDomain.list
+    interval: 86400
+  ChinaCompanyIp:
+    type: http
+    behavior: ipcidr
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list
+    path: ./ruleset/ZHT-ChinaCompanyIp.list
+    interval: 86400
+  ChinaZHT:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/Rabbit-Spec/Surge/Master/Rules/China.list
+    path: ./ruleset/ZHT-China.list
+    interval: 86400
+  Microsoft:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list
+    path: ./ruleset/ZHT-Microsoft.list
+    interval: 86400
+  OneDrive:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/OneDrive.list
+    path: ./ruleset/ZHT-OneDrive.list
+    interval: 86400
+  Apple:
+    type: http
+    behavior: classical
+    format: text
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list
+    path: ./ruleset/ZHT-Apple.list
+    interval: 86400
 
 rules:
-  - GEOSITE,category-ads-all,REJECT
-  - GEOSITE,private,DIRECT
-  - GEOIP,private,DIRECT,no-resolve
-  - GEOSITE,openai,OpenAI
-  - GEOSITE,google,Google
-  - GEOSITE,github,GitHub
-  - GEOSITE,youtube,流媒体
-  - GEOSITE,netflix,流媒体
-  - GEOSITE,spotify,流媒体
-  - GEOSITE,cn,国内直连
-  - GEOIP,CN,国内直连,no-resolve
-  - MATCH,节点选择
+  - RULE-SET,LAN,🎯 全球直连
+  - RULE-SET,UnBan,🎯 全球直连
+  - RULE-SET,BanAD,🛑 广告拦截
+  - RULE-SET,BanProgramAD,🍃 应用净化
+  - RULE-SET,GoogleCN,🎯 全球直连
+  - RULE-SET,GoogleFCM,🌐 Google
+  - RULE-SET,Google,🌐 Google
+  - RULE-SET,Gemini,✨ Gemini
+  - RULE-SET,Claude,🤖 Claude
+  - RULE-SET,OpenAI,💬 OpenAI
+  - RULE-SET,GitHub,💻 GitHub
+  - RULE-SET,Spotify,🎵 Spotify
+  - RULE-SET,TikTok,🎵 TikTok
+  - RULE-SET,Telegram,📲 Telegram
+  - RULE-SET,YouTube,📹 YouTube
+  - RULE-SET,Bahamut,📺 巴哈姆特
+  - RULE-SET,BilibiliHMT,📺 哔哩哔哩
+  - RULE-SET,Bilibili,📺 哔哩哔哩
+  - RULE-SET,ChinaMedia,🌏 国内媒体
+  - RULE-SET,ProxyMedia,🌍 国外媒体
+  - RULE-SET,Microsoft,Ⓜ️ Microsoft
+  - RULE-SET,OneDrive,Ⓜ️ Microsoft
+  - RULE-SET,Apple,🍎 Apple
+  - RULE-SET,ProxyGFW,🚀 节点选择
+  - RULE-SET,ChinaZHT,🎯 全球直连
+  - RULE-SET,ChinaDomain,🎯 全球直连
+  - RULE-SET,ChinaCompanyIp,🎯 全球直连
+  - GEOIP,CN,🎯 全球直连,no-resolve
+  - MATCH,🐟 漏网之鱼
