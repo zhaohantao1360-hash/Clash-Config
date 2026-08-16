@@ -9,35 +9,38 @@ permissions:
 
 jobs:
   build:
-    if: github.event.head_commit.message != 'feat: add V5 Clash Party config'
+    if: github.event.head_commit.message == 'chore: rebuild V5 party config'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Build V5 from V4
         shell: bash
         run: |
           set -euo pipefail
+          test -f mihomo/ZHT_Mihomo_Pro_V4.yaml
           cp mihomo/ZHT_Mihomo_Pro_V4.yaml mihomo/ZHT_Mihomo_Pro_V5.yaml
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('mihomo/ZHT_Mihomo_Pro_V5.yaml')
-          s=p.read_text(encoding='utf-8')
-          s=s.replace('# ZHT Mihomo Pro V4 / Clash Verge Rev','# ZHT Mihomo Pro V5 / Clash Party')
-          s=s.replace('# 与 V3 内容一致，仅更换策略组图标为 lige47 图标集','# 基于 V4，仅针对 Clash Party 节点测速做兼容性优化')
-          s=s.replace('https://cp.cloudflare.com/generate_204','https://www.gstatic.com/generate_204')
-          s=s.replace('timeout: 5000','timeout: 10000')
-          p.write_text(s,encoding='utf-8')
+          p = Path('mihomo/ZHT_Mihomo_Pro_V5.yaml')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('# ZHT Mihomo Pro V4 / Clash Verge Rev', '# ZHT Mihomo Pro V5 / Clash Party')
+          s = s.replace('# 与 V3 内容一致，仅更换策略组图标为 lige47 图标集', '# 基于 V4，仅针对 Clash Party 节点测速做兼容性优化')
+          s = s.replace('https://cp.cloudflare.com/generate_204', 'https://www.gstatic.com/generate_204')
+          s = s.replace('timeout: 5000', 'timeout: 10000')
+          p.write_text(s, encoding='utf-8')
           PY
-          grep -q 'https://www.gstatic.com/generate_204' mihomo/ZHT_Mihomo_Pro_V5.yaml
-          grep -q 'timeout: 10000' mihomo/ZHT_Mihomo_Pro_V5.yaml
-          ! grep -q 'https://cp.cloudflare.com/generate_204' mihomo/ZHT_Mihomo_Pro_V5.yaml
           test -s mihomo/ZHT_Mihomo_Pro_V5.yaml
-      - name: Commit V5 and remove workflow
+          grep -q 'https://www.gstatic.com/generate_204' mihomo/ZHT_Mihomo_Pro_V5.yaml
+          ! grep -q 'https://cp.cloudflare.com/generate_204' mihomo/ZHT_Mihomo_Pro_V5.yaml
+          grep -q 'timeout: 10000' mihomo/ZHT_Mihomo_Pro_V5.yaml
+
+      - name: Commit V5
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add mihomo/ZHT_Mihomo_Pro_V5.yaml
-          git rm .github/workflows/build-v5-party.yml
           git commit -m 'feat: add V5 Clash Party config'
           git push
