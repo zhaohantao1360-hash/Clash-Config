@@ -1,0 +1,86 @@
+name: Create V3 LigeIcon edition
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  create:
+    if: github.event.head_commit.message != 'feat: add V3 LigeIcon edition result'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build LigeIcon edition
+        shell: bash
+        run: |
+          set -euo pipefail
+          src='mihomo/ZHT_Mihomo_Pro_V3.yaml'
+          dst='mihomo/ZHT_Mihomo_Pro_V3_LigeIcon.yaml'
+          cp "$src" "$dst"
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('mihomo/ZHT_Mihomo_Pro_V3_LigeIcon.yaml')
+          s = p.read_text(encoding='utf-8')
+          B='https://raw.githubusercontent.com/lige47/QuanX-icon-rule/main/icon/'
+          M={
+            '🚀 节点选择': B+'05icon/rocket.png',
+            '🚀 手动切换': B+'05icon/zhuanyi.png',
+            '♻️ 自动选择': B+'05icon/chaxun.png',
+            '⚡ ISP优选': B+'05icon/lightning.png',
+            '🇭🇰 香港节点': B+'01Country/Hongkong.png',
+            '🇨🇳 台湾节点': B+'01Country/taiwan.png',
+            '🇸🇬 狮城节点': B+'01Country/singapore.png',
+            '🇯🇵 日本节点': B+'01Country/Japan.png',
+            '🇺🇲 美国节点': B+'01Country/US.png',
+            '🇰🇷 韩国节点': B+'01Country/Korea.png',
+            '🌍 其他地区': B+'05icon/quanqiu.png',
+            '🇭🇰 香港ISP': B+'01Country/Hongkong(2).png',
+            '🌐 Google': B+'04ProxySoft/google(1).png',
+            '✨ Gemini': B+'04ProxySoft/gemini.png',
+            '🤖 Claude': B+'04ProxySoft/claude.png',
+            '💻 GitHub': B+'04ProxySoft/github.png',
+            '🎵 Spotify': B+'04ProxySoft/spotify(green).png',
+            '🎵 TikTok': B+'04ProxySoft/tiktok.png',
+            '💬 OpenAI': B+'04ProxySoft/chatgpt4.0.png',
+            '📲 Telegram': B+'04ProxySoft/telegram.png',
+            '📹 YouTube': B+'04ProxySoft/youtube.png',
+            '📺 巴哈姆特': B+'04ProxySoft/bahamute.png',
+            '📺 哔哩哔哩': B+'03CNSoft/bilibili.png',
+            'Ⓜ️ Microsoft': B+'04ProxySoft/Copilot.png',
+            '🍎 Apple': B+'03CNSoft/apple.png',
+            '🎮 游戏平台': B+'05icon/game.png',
+            '🌍 国外媒体': B+'05icon/quanqiu.png',
+            '🌏 国内媒体': B+'05icon/home.png',
+            '🛑 广告拦截': B+'05icon/ad.png',
+            '🍃 应用净化': B+'05icon/blacklist.png',
+            '🎯 全球直连': B+'05icon/direct.png',
+            '🐟 漏网之鱼': B+'05icon/quanqiu(2).png',
+          }
+          lines=s.splitlines()
+          current=None
+          out=[]
+          for line in lines:
+              stripped=line.strip()
+              if stripped.startswith('- name: '):
+                  current=stripped[len('- name: '):]
+              if stripped.startswith('icon: ') and current in M:
+                  indent=line[:len(line)-len(line.lstrip())]
+                  line=indent+'icon: '+M[current]
+              out.append(line)
+          p.write_text('\n'.join(out)+'\n', encoding='utf-8')
+          PY
+          grep -q 'lige47/QuanX-icon-rule/main/icon/' "$dst"
+          grep -q 'name: ✨ Gemini' "$dst"
+          grep -q 'name: 🤖 Claude' "$dst"
+          grep -q 'name: 💬 OpenAI' "$dst"
+      - name: Commit result and remove workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add mihomo/ZHT_Mihomo_Pro_V3_LigeIcon.yaml
+          git rm .github/workflows/create-v3-ligeicon.yml
+          git commit -m 'feat: add V3 LigeIcon edition'
+          git push
