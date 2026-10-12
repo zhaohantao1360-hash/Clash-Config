@@ -1,6 +1,7 @@
 # =========================================================
 # ZHT Mihomo Pro V4 / Clash Verge Rev
 # 与 V3 内容一致，仅更换策略组图标为 lige47 图标集
+# [2026-10-12] 修复 ChinaDomain/ChinaCompanyIp 规则集类型；境外 DoH 走代理；美国节点正则；新增 sniffer/记住选择/游戏规则
 # [优化版] DNS 国内外分流 / DoH 多源冗余 / hosts 直连加速 / fake-ip-filter 补全；规则源与图标切换 jsdelivr 镜像
 # =========================================================
 mode: rule
@@ -38,8 +39,6 @@ dns:
     'doh.pub': 120.53.53.53
     'dns.alidns.com': [223.5.5.5, 223.6.6.6]
     'dns.pub': [119.29.29.29, 1.12.12.12]
-    'cloudflare-dns.com': [104.16.248.249, 104.16.249.249]
-    'dns.google': [8.8.8.8, 8.8.4.4]
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
@@ -58,11 +57,30 @@ dns:
       - https://dns.alidns.com/dns-query
       - https://dns.pub/dns-query
     'geosite:gfw':
-      - https://cloudflare-dns.com/dns-query
-      - https://dns.google/dns-query
+      - 'https://cloudflare-dns.com/dns-query#🚀 节点选择'
+      - 'https://dns.google/dns-query#🚀 节点选择'
     '+.lan': system
 
 geodata-mode: true
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+sniffer:
+  enable: true
+  parse-pure-ip: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - '+.push.apple.com'
+    - 'Mijia Cloud'
 geox-url:
   geoip: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/geoip.dat
   geosite: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geo/geosite.dat
@@ -82,7 +100,7 @@ proxy-groups:
       - 🎵 TikTok
       - ⚡ ISP优选
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
@@ -131,7 +149,7 @@ proxy-groups:
     timeout: 5000
     lazy: true
 
-  - name: 🇨🇳 台湾节点
+  - name: 🇹🇼 台湾节点
     type: url-test
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/taiwan.png
     include-all: true
@@ -171,7 +189,7 @@ proxy-groups:
     type: url-test
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/US.png
     include-all: true
-    filter: '(?i)(美国|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|USA|United States|Los Angeles|Seattle)'
+    filter: '(?i)(美国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|\bUS\b|USA|United States|America|Los Angeles|Seattle|San Jose)'
     exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
     url: https://cp.cloudflare.com/generate_204
     interval: 300
@@ -272,7 +290,7 @@ proxy-groups:
     proxies:
       - ♻️ 自动选择
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
@@ -287,7 +305,7 @@ proxy-groups:
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇭🇰 香港节点
       - ⚡ ISP优选
       - ♻️ 自动选择
@@ -310,8 +328,8 @@ proxy-groups:
     type: select
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/telegram.png
     proxies:
-      - 🇭🇰 香港ISP
       - 🇸🇬 狮城节点
+      - 🇭🇰 香港ISP
       - 🇭🇰 香港节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
@@ -326,7 +344,7 @@ proxy-groups:
     proxies:
       - ♻️ 自动选择
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
@@ -338,7 +356,7 @@ proxy-groups:
     type: select
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/bahamute.png
     proxies:
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇭🇰 香港节点
       - ♻️ 自动选择
       - 🚀 手动切换
@@ -349,7 +367,7 @@ proxy-groups:
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/03CNSoft/bilibili.png
     proxies:
       - DIRECT
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇭🇰 香港节点
       - ♻️ 自动选择
 
@@ -372,7 +390,7 @@ proxy-groups:
       - DIRECT
       - ♻️ 自动选择
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇺🇲 美国节点
       - 🇯🇵 日本节点
 
@@ -383,7 +401,7 @@ proxy-groups:
       - DIRECT
       - ♻️ 自动选择
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
       - 🇺🇲 美国节点
@@ -398,7 +416,7 @@ proxy-groups:
       - ♻️ 自动选择
       - ⚡ ISP优选
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
@@ -412,7 +430,7 @@ proxy-groups:
     proxies:
       - DIRECT
       - 🇭🇰 香港节点
-      - 🇨🇳 台湾节点
+      - 🇹🇼 台湾节点
       - ♻️ 自动选择
       - 🚀 手动切换
 
@@ -537,7 +555,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: https://fastly.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Ruleset/OpenAi.list
+    url: https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.list
     path: ./ruleset/ZHT-OpenAI.list
     interval: 86400
   Telegram:
@@ -598,14 +616,14 @@ rule-providers:
     interval: 86400
   ChinaDomain:
     type: http
-    behavior: domain
+    behavior: classical
     format: text
     url: https://fastly.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ChinaDomain.list
     path: ./ruleset/ZHT-ChinaDomain.list
     interval: 86400
   ChinaCompanyIp:
     type: http
-    behavior: ipcidr
+    behavior: classical
     format: text
     url: https://fastly.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ChinaCompanyIp.list
     path: ./ruleset/ZHT-ChinaCompanyIp.list
@@ -621,7 +639,7 @@ rule-providers:
     type: http
     behavior: classical
     format: text
-    url: https://fastly.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Microsoft.list
+    url: https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Microsoft/Microsoft.list
     path: ./ruleset/ZHT-Microsoft.list
     interval: 86400
   OneDrive:
@@ -630,6 +648,20 @@ rule-providers:
     format: text
     url: https://fastly.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/OneDrive.list
     path: ./ruleset/ZHT-OneDrive.list
+    interval: 86400
+  Steam:
+    type: http
+    behavior: classical
+    format: text
+    url: https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Steam/Steam.list
+    path: ./ruleset/ZHT-Steam.list
+    interval: 86400
+  Epic:
+    type: http
+    behavior: classical
+    format: text
+    url: https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/Epic/Epic.list
+    path: ./ruleset/ZHT-Epic.list
     interval: 86400
   Apple:
     type: http
@@ -663,6 +695,8 @@ rules:
   - RULE-SET,Microsoft,Ⓜ️ Microsoft
   - RULE-SET,OneDrive,Ⓜ️ Microsoft
   - RULE-SET,Apple,🍎 Apple
+  - RULE-SET,Steam,🎮 游戏平台
+  - RULE-SET,Epic,🎮 游戏平台
   - RULE-SET,ProxyGFW,🚀 节点选择
   - RULE-SET,ChinaZHT,🎯 全球直连
   - RULE-SET,ChinaDomain,🎯 全球直连
