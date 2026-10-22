@@ -3,7 +3,7 @@
 # 基于 V4 优化版：只保留 Corn 实有的 美国/新加坡/香港/台湾/日本 五个地区
 # 删除 ISP优选 / 韩国 / 其他地区 / 香港ISP；节点改由 proxy-providers「Corn」提供
 # 使用前：把 proxy-providers.Corn.url 换成你的订阅链接
-# 注意：mihomo 只支持 Snell v1–v3，若机场下发的是 Snell v4/v5，这些节点会无法使用，只剩 Trojan 节点可用
+# Corn 的 Clash 订阅下发 17 个 Trojan 节点（台湾/香港/日本/新加坡各3，美国5）
 # =========================================================
 mode: rule
 mixed-port: 7897
