@@ -4,6 +4,7 @@
 # 删除 ISP优选 / 韩国 / 其他地区 / 香港ISP；节点改由 proxy-providers「Corn」提供
 # 使用前：把 proxy-providers.Corn.url 换成你的订阅链接
 # Corn 的 Clash 订阅下发 17 个 Trojan 节点（台湾/香港/日本/新加坡各3，美国5）
+# [2026-10-22] 代理组按 Corn 17 个 Trojan 节点优化：AI 组只用美/日/新/台（剔除不支持的香港）；新增故障转移；TikTok 剔除香港；巴哈姆特仅台湾
 # =========================================================
 mode: rule
 mixed-port: 7897
@@ -110,12 +111,7 @@ proxy-groups:
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/rocket.png
   proxies:
   - ♻️ 自动选择
-  - 🌐 Google
-  - ✨ Gemini
-  - 🤖 Claude
-  - 💻 GitHub
-  - 🎵 Spotify
-  - 🎵 TikTok
+  - 🔯 故障转移
   - 🇭🇰 香港节点
   - 🇹🇼 台湾节点
   - 🇸🇬 狮城节点
@@ -123,87 +119,101 @@ proxy-groups:
   - 🇺🇲 美国节点
   - 🚀 手动切换
   - DIRECT
-- name: 🚀 手动切换
-  type: select
-  icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/zhuanyi.png
-  use:
-  - Corn
 - name: ♻️ 自动选择
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png
   url: https://cp.cloudflare.com/generate_204
   interval: 300
-  tolerance: 80
+  tolerance: 50
   timeout: 5000
   lazy: false
   use:
   - Corn
+- name: 🔯 故障转移
+  type: fallback
+  icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png
+  proxies:
+  - 🇺🇲 美国节点
+  - 🇯🇵 日本节点
+  - 🇸🇬 狮城节点
+  - 🇹🇼 台湾节点
+  - 🇭🇰 香港节点
+  url: https://cp.cloudflare.com/generate_204
+  interval: 180
+  timeout: 3000
+  lazy: false
 - name: 🇭🇰 香港节点
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Hongkong.png
-  filter: (?i)(香港|HK|Hong ?Kong)
+  filter: 香港
   url: https://cp.cloudflare.com/generate_204
   interval: 300
-  tolerance: 60
+  tolerance: 50
   timeout: 5000
-  lazy: true
+  lazy: false
   use:
   - Corn
 - name: 🇹🇼 台湾节点
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/taiwan.png
-  filter: (?i)(台湾|TW|Taiwan)
+  filter: 台湾
   url: https://cp.cloudflare.com/generate_204
   interval: 300
-  tolerance: 60
+  tolerance: 50
   timeout: 5000
-  lazy: true
+  lazy: false
   use:
   - Corn
 - name: 🇸🇬 狮城节点
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/singapore.png
-  filter: (?i)(新加坡|SG|Singapore)
+  filter: 新加坡
   url: https://cp.cloudflare.com/generate_204
   interval: 300
-  tolerance: 60
+  tolerance: 50
   timeout: 5000
-  lazy: true
+  lazy: false
   use:
   - Corn
 - name: 🇯🇵 日本节点
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Japan(1).png
-  filter: (?i)(日本|JP|Japan)
+  filter: 日本
   url: https://cp.cloudflare.com/generate_204
   interval: 300
-  tolerance: 60
+  tolerance: 50
   timeout: 5000
-  lazy: true
+  lazy: false
   use:
   - Corn
 - name: 🇺🇲 美国节点
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/US.png
-  filter: (?i)(美国|US|United States)
+  filter: 美国
   url: https://cp.cloudflare.com/generate_204
   interval: 300
-  tolerance: 60
+  tolerance: 50
   timeout: 5000
-  lazy: true
+  lazy: false
+  use:
+  - Corn
+- name: 🚀 手动切换
+  type: select
+  icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/zhuanyi.png
   use:
   - Corn
 - name: 🌐 Google
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/google(1).png
   proxies:
+  - 🚀 节点选择
   - ♻️ 自动选择
   - 🇭🇰 香港节点
-  - 🇯🇵 日本节点
+  - 🇹🇼 台湾节点
   - 🇸🇬 狮城节点
+  - 🇯🇵 日本节点
   - 🇺🇲 美国节点
   - 🚀 手动切换
-  - DIRECT
 - name: ✨ Gemini
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/gemini.png
@@ -211,10 +221,8 @@ proxy-groups:
   - 🇺🇲 美国节点
   - 🇯🇵 日本节点
   - 🇸🇬 狮城节点
-  - 🌐 Google
-  - ♻️ 自动选择
+  - 🇹🇼 台湾节点
   - 🚀 手动切换
-  - DIRECT
 - name: 🤖 Claude
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/claude.png
@@ -222,24 +230,13 @@ proxy-groups:
   - 🇺🇲 美国节点
   - 🇯🇵 日本节点
   - 🇸🇬 狮城节点
-  - ♻️ 自动选择
+  - 🇹🇼 台湾节点
   - 🚀 手动切换
-  - DIRECT
 - name: 💻 GitHub
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/github.png
   proxies:
-  - ♻️ 自动选择
-  - 🇭🇰 香港节点
-  - 🇯🇵 日本节点
-  - 🇸🇬 狮城节点
-  - 🇺🇲 美国节点
-  - 🚀 手动切换
-  - DIRECT
-- name: 🎵 Spotify
-  type: select
-  icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/spotify(green).png
-  proxies:
+  - 🚀 节点选择
   - ♻️ 自动选择
   - 🇭🇰 香港节点
   - 🇹🇼 台湾节点
@@ -248,6 +245,17 @@ proxy-groups:
   - 🇺🇲 美国节点
   - 🚀 手动切换
   - DIRECT
+- name: 🎵 Spotify
+  type: select
+  icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/spotify(green).png
+  proxies:
+  - 🚀 节点选择
+  - 🇭🇰 香港节点
+  - 🇹🇼 台湾节点
+  - 🇸🇬 狮城节点
+  - 🇯🇵 日本节点
+  - 🇺🇲 美国节点
+  - 🚀 手动切换
 - name: 🎵 TikTok
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/tiktok.png
@@ -256,10 +264,7 @@ proxy-groups:
   - 🇯🇵 日本节点
   - 🇺🇲 美国节点
   - 🇹🇼 台湾节点
-  - 🇭🇰 香港节点
-  - ♻️ 自动选择
   - 🚀 手动切换
-  - DIRECT
 - name: 💬 OpenAI
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/chatgpt4.0.png
@@ -267,24 +272,24 @@ proxy-groups:
   - 🇺🇲 美国节点
   - 🇯🇵 日本节点
   - 🇸🇬 狮城节点
-  - ♻️ 自动选择
+  - 🇹🇼 台湾节点
   - 🚀 手动切换
-  - DIRECT
 - name: 📲 Telegram
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/telegram.png
   proxies:
   - 🇸🇬 狮城节点
+  - 🚀 节点选择
   - 🇭🇰 香港节点
   - 🇯🇵 日本节点
   - 🇺🇲 美国节点
-  - ♻️ 自动选择
+  - 🇹🇼 台湾节点
   - 🚀 手动切换
-  - DIRECT
 - name: 📹 YouTube
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/Youtube.png
   proxies:
+  - 🚀 节点选择
   - ♻️ 自动选择
   - 🇭🇰 香港节点
   - 🇹🇼 台湾节点
@@ -292,16 +297,12 @@ proxy-groups:
   - 🇯🇵 日本节点
   - 🇺🇲 美国节点
   - 🚀 手动切换
-  - DIRECT
 - name: 📺 巴哈姆特
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/bahamute.png
   proxies:
   - 🇹🇼 台湾节点
-  - 🇭🇰 香港节点
-  - ♻️ 自动选择
   - 🚀 手动切换
-  - DIRECT
 - name: 📺 哔哩哔哩
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/03CNSoft/bilibili.png
@@ -309,13 +310,12 @@ proxy-groups:
   - DIRECT
   - 🇹🇼 台湾节点
   - 🇭🇰 香港节点
-  - ♻️ 自动选择
 - name: Ⓜ️ Microsoft
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/Copilot.png
   proxies:
   - DIRECT
-  - ♻️ 自动选择
+  - 🚀 节点选择
   - 🇺🇲 美国节点
   - 🇭🇰 香港节点
   - 🇯🇵 日本节点
@@ -325,17 +325,17 @@ proxy-groups:
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/03CNSoft/apple.png
   proxies:
   - DIRECT
-  - ♻️ 自动选择
+  - 🚀 节点选择
+  - 🇺🇲 美国节点
   - 🇭🇰 香港节点
   - 🇹🇼 台湾节点
-  - 🇺🇲 美国节点
   - 🇯🇵 日本节点
 - name: 🎮 游戏平台
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/game.png
   proxies:
   - DIRECT
-  - ♻️ 自动选择
+  - 🚀 节点选择
   - 🇭🇰 香港节点
   - 🇹🇼 台湾节点
   - 🇯🇵 日本节点
@@ -354,7 +354,6 @@ proxy-groups:
   - 🇯🇵 日本节点
   - 🇺🇲 美国节点
   - 🚀 手动切换
-  - DIRECT
 - name: 🌏 国内媒体
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/home.png
@@ -362,8 +361,6 @@ proxy-groups:
   - DIRECT
   - 🇭🇰 香港节点
   - 🇹🇼 台湾节点
-  - ♻️ 自动选择
-  - 🚀 手动切换
 - name: 🛑 广告拦截
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/ad.png
@@ -381,16 +378,13 @@ proxy-groups:
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/direct.png
   proxies:
   - DIRECT
-  - ♻️ 自动选择
-  - 🚀 手动切换
+  - 🚀 节点选择
 - name: 🐟 漏网之鱼
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/quanqiu(2).png
   proxies:
   - 🚀 节点选择
-  - ♻️ 自动选择
   - DIRECT
-  - 🚀 手动切换
 rule-providers:
   LAN:
     type: http
