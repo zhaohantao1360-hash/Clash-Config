@@ -5,6 +5,7 @@
 # 使用前：把 proxy-providers.Corn.url 换成你的订阅链接
 # Corn 的 Clash 订阅下发 17 个 Trojan 节点（台湾/香港/日本/新加坡各3，美国5）
 # [2026-10-22] 代理组按 Corn 17 个 Trojan 节点优化：AI 组只用美/日/新/台（剔除不支持的香港）；新增故障转移；TikTok 剔除香港；巴哈姆特仅台湾
+# [2026-10-22] 新增 🧠 MetaAI-Wabi-Hark 代理组（meta.ai / wabi.ai / hark.com），默认美国
 # =========================================================
 mode: rule
 mixed-port: 7897
@@ -270,6 +271,16 @@ proxy-groups:
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/chatgpt4.0.png
   proxies:
   - 🇺🇲 美国节点
+  - 🇯🇵 日本节点
+  - 🇸🇬 狮城节点
+  - 🇹🇼 台湾节点
+  - 🚀 手动切换
+- name: 🧠 MetaAI-Wabi-Hark
+  type: select
+  icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/rocket.png
+  proxies:
+  - 🇺🇲 美国节点
+  - 🔯 故障转移
   - 🇯🇵 日本节点
   - 🇸🇬 狮城节点
   - 🇹🇼 台湾节点
@@ -600,6 +611,12 @@ rules:
 - RULE-SET,Gemini,✨ Gemini
 - RULE-SET,Claude,🤖 Claude
 - RULE-SET,OpenAI,💬 OpenAI
+- DOMAIN-SUFFIX,meta.ai,🧠 MetaAI-Wabi-Hark
+- DOMAIN,ai.meta.com,🧠 MetaAI-Wabi-Hark
+- DOMAIN-KEYWORD,metaai,🧠 MetaAI-Wabi-Hark
+- DOMAIN-SUFFIX,wabi.ai,🧠 MetaAI-Wabi-Hark
+- DOMAIN-SUFFIX,hark.com,🧠 MetaAI-Wabi-Hark
+- DOMAIN-SUFFIX,hark.ai,🧠 MetaAI-Wabi-Hark
 - RULE-SET,GitHub,💻 GitHub
 - RULE-SET,Spotify,🎵 Spotify
 - RULE-SET,TikTok,🎵 TikTok
