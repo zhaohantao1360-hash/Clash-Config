@@ -144,7 +144,7 @@ proxy-groups:
 
   - name: 🇯🇵 日本节点
     type: url-test
-    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Japan.png
+    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Japan(1).png
     include-all: true
     filter: '(?i)(日本|东京|大阪|埼玉|川日|泉日|沪日|深日|JP|Japan|Tokyo|Osaka)'
     exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
@@ -264,7 +264,7 @@ proxy-groups:
 
   - name: 📹 YouTube
     type: select
-    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/youtube.png
+    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/Youtube.png
     proxies:
       - ♻️ 自动选择
       - 🇭🇰 香港节点
