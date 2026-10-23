@@ -119,11 +119,11 @@ const ZHT = {
       "proxies": [
         "♻️ 自动选择",
         "🔯 故障转移",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
         "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
         "🚀 手动切换",
         "DIRECT"
       ]
@@ -132,12 +132,19 @@ const ZHT = {
       "name": "♻️ 自动选择",
       "type": "url-test",
       "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png",
+      "proxies": [
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点"
+      ],
       "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 50,
-      "timeout": 5000,
+      "timeout": 3000,
       "lazy": false,
-      "include-all": true
+      "max-failed-times": 2,
+      "interval": 120,
+      "tolerance": 30
     },
     {
       "name": "🔯 故障转移",
@@ -151,69 +158,92 @@ const ZHT = {
         "🇭🇰 香港节点"
       ],
       "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 180,
       "timeout": 3000,
-      "lazy": false
+      "lazy": false,
+      "max-failed-times": 2,
+      "interval": 120
     },
     {
-      "name": "🇭🇰 香港节点",
+      "name": "🤖 AI 自动",
       "type": "url-test",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Hongkong.png",
-      "filter": "香港",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/chatgpt4.0.png",
+      "proxies": [
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点"
+      ],
       "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 50,
-      "timeout": 5000,
+      "timeout": 3000,
       "lazy": false,
-      "include-all": true
-    },
-    {
-      "name": "🇹🇼 台湾节点",
-      "type": "url-test",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/taiwan.png",
-      "filter": "台湾",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 50,
-      "timeout": 5000,
-      "lazy": false,
-      "include-all": true
-    },
-    {
-      "name": "🇸🇬 狮城节点",
-      "type": "url-test",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/singapore.png",
-      "filter": "新加坡",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 50,
-      "timeout": 5000,
-      "lazy": false,
-      "include-all": true
-    },
-    {
-      "name": "🇯🇵 日本节点",
-      "type": "url-test",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Japan(1).png",
-      "filter": "日本",
-      "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 50,
-      "timeout": 5000,
-      "lazy": false,
-      "include-all": true
+      "max-failed-times": 2,
+      "interval": 120,
+      "tolerance": 30
     },
     {
       "name": "🇺🇲 美国节点",
       "type": "url-test",
       "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/US.png",
       "filter": "美国",
+      "include-all": true,
       "url": "https://cp.cloudflare.com/generate_204",
-      "interval": 300,
-      "tolerance": 50,
-      "timeout": 5000,
+      "timeout": 3000,
       "lazy": false,
-      "include-all": true
+      "max-failed-times": 2,
+      "interval": 180,
+      "tolerance": 50
+    },
+    {
+      "name": "🇯🇵 日本节点",
+      "type": "url-test",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Japan(1).png",
+      "filter": "日本",
+      "include-all": true,
+      "url": "https://cp.cloudflare.com/generate_204",
+      "timeout": 3000,
+      "lazy": false,
+      "max-failed-times": 2,
+      "interval": 180,
+      "tolerance": 50
+    },
+    {
+      "name": "🇸🇬 狮城节点",
+      "type": "url-test",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/singapore.png",
+      "filter": "新加坡",
+      "include-all": true,
+      "url": "https://cp.cloudflare.com/generate_204",
+      "timeout": 3000,
+      "lazy": false,
+      "max-failed-times": 2,
+      "interval": 180,
+      "tolerance": 50
+    },
+    {
+      "name": "🇹🇼 台湾节点",
+      "type": "url-test",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/taiwan.png",
+      "filter": "台湾",
+      "include-all": true,
+      "url": "https://cp.cloudflare.com/generate_204",
+      "timeout": 3000,
+      "lazy": false,
+      "max-failed-times": 2,
+      "interval": 180,
+      "tolerance": 50
+    },
+    {
+      "name": "🇭🇰 香港节点",
+      "type": "url-test",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Hongkong.png",
+      "filter": "香港",
+      "include-all": true,
+      "url": "https://cp.cloudflare.com/generate_204",
+      "timeout": 3000,
+      "lazy": false,
+      "max-failed-times": 2,
+      "interval": 180,
+      "tolerance": 50
     },
     {
       "name": "🚀 手动切换",
@@ -228,19 +258,21 @@ const ZHT = {
       "proxies": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
+        "🔯 故障转移",
         "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
         "🚀 手动切换"
       ]
     },
     {
-      "name": "✨ Gemini",
+      "name": "💬 OpenAI",
       "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/gemini.png",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/chatgpt4.0.png",
       "proxies": [
+        "🤖 AI 自动",
         "🇺🇲 美国节点",
         "🇯🇵 日本节点",
         "🇸🇬 狮城节点",
@@ -253,6 +285,7 @@ const ZHT = {
       "type": "select",
       "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/claude.png",
       "proxies": [
+        "🤖 AI 自动",
         "🇺🇲 美国节点",
         "🇯🇵 日本节点",
         "🇸🇬 狮城节点",
@@ -261,52 +294,11 @@ const ZHT = {
       ]
     },
     {
-      "name": "💻 GitHub",
+      "name": "✨ Gemini",
       "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/github.png",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/gemini.png",
       "proxies": [
-        "🚀 节点选择",
-        "♻️ 自动选择",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇲 美国节点",
-        "🚀 手动切换",
-        "DIRECT"
-      ]
-    },
-    {
-      "name": "🎵 Spotify",
-      "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/spotify(green).png",
-      "proxies": [
-        "🚀 节点选择",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇲 美国节点",
-        "🚀 手动切换"
-      ]
-    },
-    {
-      "name": "🎵 TikTok",
-      "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/tiktok.png",
-      "proxies": [
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
-        "🇺🇲 美国节点",
-        "🇹🇼 台湾节点",
-        "🚀 手动切换"
-      ]
-    },
-    {
-      "name": "💬 OpenAI",
-      "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/chatgpt4.0.png",
-      "proxies": [
+        "🤖 AI 自动",
         "🇺🇲 美国节点",
         "🇯🇵 日本节点",
         "🇸🇬 狮城节点",
@@ -320,11 +312,28 @@ const ZHT = {
       "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/rocket.png",
       "proxies": [
         "🇺🇲 美国节点",
-        "🔯 故障转移",
+        "🤖 AI 自动",
         "🇯🇵 日本节点",
         "🇸🇬 狮城节点",
         "🇹🇼 台湾节点",
         "🚀 手动切换"
+      ]
+    },
+    {
+      "name": "💻 GitHub",
+      "type": "select",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/github.png",
+      "proxies": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "🔯 故障转移",
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
+        "🚀 手动切换",
+        "DIRECT"
       ]
     },
     {
@@ -334,6 +343,8 @@ const ZHT = {
       "proxies": [
         "🇸🇬 狮城节点",
         "🚀 节点选择",
+        "♻️ 自动选择",
+        "🔯 故障转移",
         "🇭🇰 香港节点",
         "🇯🇵 日本节点",
         "🇺🇲 美国节点",
@@ -348,11 +359,39 @@ const ZHT = {
       "proxies": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "🇭🇰 香港节点",
+        "🔯 故障转移",
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
         "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
+        "🚀 手动切换"
+      ]
+    },
+    {
+      "name": "🎵 Spotify",
+      "type": "select",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/spotify(green).png",
+      "proxies": [
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
+        "🚀 手动切换"
+      ]
+    },
+    {
+      "name": "🎵 TikTok",
+      "type": "select",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/tiktok.png",
+      "proxies": [
         "🇸🇬 狮城节点",
         "🇯🇵 日本节点",
         "🇺🇲 美国节点",
+        "🇹🇼 台湾节点",
         "🚀 手动切换"
       ]
     },
@@ -376,58 +415,18 @@ const ZHT = {
       ]
     },
     {
-      "name": "Ⓜ️ Microsoft",
-      "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/Copilot.png",
-      "proxies": [
-        "DIRECT",
-        "🚀 节点选择",
-        "🇺🇲 美国节点",
-        "🇭🇰 香港节点",
-        "🇯🇵 日本节点",
-        "🚀 手动切换"
-      ]
-    },
-    {
-      "name": "🍎 Apple",
-      "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/03CNSoft/apple.png",
-      "proxies": [
-        "DIRECT",
-        "🚀 节点选择",
-        "🇺🇲 美国节点",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇯🇵 日本节点"
-      ]
-    },
-    {
-      "name": "🎮 游戏平台",
-      "type": "select",
-      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/game.png",
-      "proxies": [
-        "DIRECT",
-        "🚀 节点选择",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇯🇵 日本节点",
-        "🇸🇬 狮城节点",
-        "🇺🇲 美国节点",
-        "🚀 手动切换"
-      ]
-    },
-    {
       "name": "🌍 国外媒体",
       "type": "select",
       "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/quanqiu.png",
       "proxies": [
         "🚀 节点选择",
         "♻️ 自动选择",
-        "🇭🇰 香港节点",
-        "🇹🇼 台湾节点",
-        "🇸🇬 狮城节点",
-        "🇯🇵 日本节点",
+        "🔯 故障转移",
         "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
         "🚀 手动切换"
       ]
     },
@@ -439,6 +438,49 @@ const ZHT = {
         "DIRECT",
         "🇭🇰 香港节点",
         "🇹🇼 台湾节点"
+      ]
+    },
+    {
+      "name": "Ⓜ️ Microsoft",
+      "type": "select",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/Copilot.png",
+      "proxies": [
+        "DIRECT",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇭🇰 香港节点",
+        "🚀 手动切换"
+      ]
+    },
+    {
+      "name": "🍎 Apple",
+      "type": "select",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/03CNSoft/apple.png",
+      "proxies": [
+        "DIRECT",
+        "🚀 节点选择",
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇭🇰 香港节点",
+        "🇹🇼 台湾节点"
+      ]
+    },
+    {
+      "name": "🎮 游戏平台",
+      "type": "select",
+      "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/game.png",
+      "proxies": [
+        "DIRECT",
+        "🚀 节点选择",
+        "♻️ 自动选择",
+        "🇺🇲 美国节点",
+        "🇯🇵 日本节点",
+        "🇸🇬 狮城节点",
+        "🇹🇼 台湾节点",
+        "🇭🇰 香港节点",
+        "🚀 手动切换"
       ]
     },
     {
@@ -474,6 +516,8 @@ const ZHT = {
       "icon": "https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/quanqiu(2).png",
       "proxies": [
         "🚀 节点选择",
+        "♻️ 自动选择",
+        "🔯 故障转移",
         "DIRECT"
       ]
     }
