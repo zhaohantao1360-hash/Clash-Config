@@ -1,6 +1,7 @@
 # =========================================================
 # ZHT Mihomo Pro V4 / Clash Verge Rev
 # 与 V3 内容一致，仅更换策略组图标为 lige47 图标集
+# [2026-10-23] 去掉 Corn 没有节点的空组：ISP优选 / 韩国 / 其他地区 / 香港ISP
 # [2026-10-23] hark.com / hark.ai 固定走美国节点
 # [优化版] DNS 国内外分流 / DoH 多源冗余 / hosts 直连加速 / fake-ip-filter 补全；规则源与图标切换 jsdelivr 镜像
 # =========================================================
@@ -81,14 +82,11 @@ proxy-groups:
       - 💻 GitHub
       - 🎵 Spotify
       - 🎵 TikTok
-      - ⚡ ISP优选
       - 🇭🇰 香港节点
       - 🇨🇳 台湾节点
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
-      - 🇰🇷 韩国节点
-      - 🌍 其他地区
       - 🚀 手动切换
       - DIRECT
 
@@ -107,18 +105,6 @@ proxy-groups:
     tolerance: 80
     timeout: 5000
     lazy: false
-
-  - name: ⚡ ISP优选
-    type: url-test
-    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/lightning.png
-    include-all: true
-    filter: '(?i)(ISP|IEPL|IPLC|专线|家宽|原生|Dedicated|Residential)'
-    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-    tolerance: 60
-    timeout: 5000
-    lazy: true
 
   - name: 🇭🇰 香港节点
     type: url-test
@@ -180,42 +166,6 @@ proxy-groups:
     timeout: 5000
     lazy: true
 
-  - name: 🇰🇷 韩国节点
-    type: url-test
-    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Korea.png
-    include-all: true
-    filter: '(?i)(韩国|首尔|韩|韓|KR|KOR|Korea|Seoul)'
-    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-    tolerance: 60
-    timeout: 5000
-    lazy: true
-
-  - name: 🌍 其他地区
-    type: url-test
-    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/quanqiu.png
-    include-all: true
-    filter: '(?i)(俄罗斯|加拿大|印度|印度尼西亚|土耳其|奥地利|希腊|德国|澳大利亚|爱尔兰|瑞典|瑞士|芬兰|英国|菲律宾|葡萄牙|西班牙|阿联酋|马来西亚|法国|泰国|Australia|Canada|Germany|France|UK|Spain|Sweden|Switzerland|Finland|Thailand|Malaysia|UAE|Austria|Greece|Ireland|Portugal|Philippines|Turkey|India|Indonesia|Russia)'
-    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-    tolerance: 80
-    timeout: 5000
-    lazy: true
-
-  - name: 🇭🇰 香港ISP
-    type: url-test
-    icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Hongkong(2).png
-    include-all: true
-    filter: '(?i)(香港\s*ISP|HK\s*ISP|Hong ?Kong.*ISP)'
-    exclude-filter: '(?i)(到期时间|到期|剩余流量|剩余|流量|邀请码|邀请|官网|打不开网站|无法订阅|重新复制|订阅|套餐|重置|官方|Expire|Traffic|Invite|Official|Subscribe|Reset)'
-    url: https://cp.cloudflare.com/generate_204
-    interval: 300
-    tolerance: 60
-    timeout: 5000
-    lazy: true
-
   - name: 🌐 Google
     type: select
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/google(1).png
@@ -225,7 +175,6 @@ proxy-groups:
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
       - 🇺🇲 美国节点
-      - ⚡ ISP优选
       - 🚀 手动切换
       - DIRECT
 
@@ -237,7 +186,6 @@ proxy-groups:
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
       - 🌐 Google
-      - ⚡ ISP优选
       - ♻️ 自动选择
       - 🚀 手动切换
       - DIRECT
@@ -249,7 +197,6 @@ proxy-groups:
       - 🇺🇲 美国节点
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
-      - ⚡ ISP优选
       - ♻️ 自动选择
       - 🚀 手动切换
       - DIRECT
@@ -263,7 +210,6 @@ proxy-groups:
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
       - 🇺🇲 美国节点
-      - ⚡ ISP优选
       - 🚀 手动切换
       - DIRECT
 
@@ -277,7 +223,6 @@ proxy-groups:
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
-      - ⚡ ISP优选
       - 🚀 手动切换
       - DIRECT
 
@@ -290,7 +235,6 @@ proxy-groups:
       - 🇺🇲 美国节点
       - 🇨🇳 台湾节点
       - 🇭🇰 香港节点
-      - ⚡ ISP优选
       - ♻️ 自动选择
       - 🚀 手动切换
       - DIRECT
@@ -302,7 +246,6 @@ proxy-groups:
       - 🇺🇲 美国节点
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
-      - ⚡ ISP优选
       - ♻️ 自动选择
       - 🚀 手动切换
       - DIRECT
@@ -311,12 +254,10 @@ proxy-groups:
     type: select
     icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/telegram.png
     proxies:
-      - 🇭🇰 香港ISP
       - 🇸🇬 狮城节点
       - 🇭🇰 香港节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
-      - ⚡ ISP优选
       - ♻️ 自动选择
       - 🚀 手动切换
       - DIRECT
@@ -331,7 +272,6 @@ proxy-groups:
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
-      - ⚡ ISP优选
       - 🚀 手动切换
       - DIRECT
 
@@ -363,7 +303,6 @@ proxy-groups:
       - 🇺🇲 美国节点
       - 🇭🇰 香港节点
       - 🇯🇵 日本节点
-      - ⚡ ISP优选
       - 🚀 手动切换
 
   - name: 🍎 Apple
@@ -388,7 +327,6 @@ proxy-groups:
       - 🇯🇵 日本节点
       - 🇸🇬 狮城节点
       - 🇺🇲 美国节点
-      - ⚡ ISP优选
       - 🚀 手动切换
 
   - name: 🌍 国外媒体
@@ -397,13 +335,11 @@ proxy-groups:
     proxies:
       - 🚀 节点选择
       - ♻️ 自动选择
-      - ⚡ ISP优选
       - 🇭🇰 香港节点
       - 🇨🇳 台湾节点
       - 🇸🇬 狮城节点
       - 🇯🇵 日本节点
       - 🇺🇲 美国节点
-      - 🌍 其他地区
       - 🚀 手动切换
       - DIRECT
 
@@ -445,7 +381,6 @@ proxy-groups:
     proxies:
       - 🚀 节点选择
       - ♻️ 自动选择
-      - ⚡ ISP优选
       - DIRECT
       - 🚀 手动切换
 
