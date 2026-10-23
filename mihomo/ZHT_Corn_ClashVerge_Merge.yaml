@@ -105,7 +105,7 @@ proxy-groups:
 - name: ♻️ 自动选择
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png
-  proxies: &id001
+  proxies:
   - 🇺🇲 美国节点
   - 🇯🇵 日本节点
   - 🇸🇬 狮城节点
@@ -120,7 +120,12 @@ proxy-groups:
 - name: 🔯 故障转移
   type: fallback
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png
-  proxies: *id001
+  proxies:
+  - 🇺🇲 美国节点
+  - 🇯🇵 日本节点
+  - 🇸🇬 狮城节点
+  - 🇹🇼 台湾节点
+  - 🇭🇰 香港节点
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
   lazy: false
