@@ -123,7 +123,7 @@ proxy-groups:
 - name: ♻️ 自动选择
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png
-  proxies: &id001
+  proxies:
   - 🇺🇲 美国节点
   - 🇯🇵 日本节点
   - 🇸🇬 狮城节点
@@ -138,7 +138,12 @@ proxy-groups:
 - name: 🔯 故障转移
   type: fallback
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/chaxun.png
-  proxies: *id001
+  proxies:
+  - 🇺🇲 美国节点
+  - 🇯🇵 日本节点
+  - 🇸🇬 狮城节点
+  - 🇹🇼 台湾节点
+  - 🇭🇰 香港节点
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
   lazy: false
@@ -162,7 +167,7 @@ proxy-groups:
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/US.png
   filter: 美国
-  use: &id002
+  use:
   - Corn
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
@@ -174,7 +179,8 @@ proxy-groups:
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Japan(1).png
   filter: 日本
-  use: *id002
+  use:
+  - Corn
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
   lazy: false
@@ -185,7 +191,8 @@ proxy-groups:
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/singapore.png
   filter: 新加坡
-  use: *id002
+  use:
+  - Corn
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
   lazy: false
@@ -196,7 +203,8 @@ proxy-groups:
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/taiwan.png
   filter: 台湾
-  use: *id002
+  use:
+  - Corn
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
   lazy: false
@@ -207,7 +215,8 @@ proxy-groups:
   type: url-test
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/01Country/Hongkong.png
   filter: 香港
-  use: *id002
+  use:
+  - Corn
   url: https://cp.cloudflare.com/generate_204
   timeout: 3000
   lazy: false
@@ -217,7 +226,8 @@ proxy-groups:
 - name: 🚀 手动切换
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/05icon/zhuanyi.png
-  use: *id002
+  use:
+  - Corn
 - name: 🌐 Google
   type: select
   icon: https://fastly.jsdelivr.net/gh/lige47/QuanX-icon-rule@main/icon/04ProxySoft/google(1).png
