@@ -1,13 +1,14 @@
 # =========================================================
 # ZHT Mihomo Pro V6 优化版（基于 2026-11-21 的 V4 脱敏公开版 / Clash Verge Rev）
-# 更新日期：2026-11-21
+# 更新日期：2026-11-24
 # 特性：
 #   - 纯规则与策略组模板，不含任何节点/订阅/密钥，可安全托管至公开 GitHub
 #   - 全部规则源与图标统一走 fastly.jsdelivr.net 镜像（fmz200 图标库为主，lige47 补缺）
-#   - 优化：自动选择 lazy 改 true、主选择器补香港ISP、ChinaZHT 换成 ChinaDomain+ChinaCompanyIp、
+#   - 优化：自动选择 lazy 改 true、主选择器补香港ISP、ChinaZHT+ChinaDomain+ChinaCompanyIp 三重国内直连、
 #     AppleIntelligence 换自托管 muse-TCS 版（含 PCC 域名，修 iOS 27 扩图漏分流）
 #   - 顶层 hosts 加速 DoH 与 App Store；境外 DNS 走代理 IP-DoH 防污染
 #   - AI 精细分流（Gemini/Claude/OpenAI/Apple AI）置于 Google 之前防截胡
+# [2026-11-24] 国内直连优化：加回 ChinaZHT（Rabbit-Spec China.list，6423 条）；jyipm.com 直连；GEOIP,CN 去 no-resolve（fake-ip 下可对域名判 CN）
 # =========================================================
 mode: rule
 mixed-port: 7897
@@ -435,6 +436,13 @@ rule-providers:
     <<: *rule-provider
     url: https://fastly.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyGFWlist.list
     path: ./ruleset/ZHT-ProxyGFW.list
+  ChinaZHT:
+    type: http
+    behavior: classical
+    format: text
+    url: https://fastly.jsdelivr.net/gh/Rabbit-Spec/Surge@Master/Rules/China.list
+    path: ./ruleset/ZHT-China.list
+    interval: 86400
   ChinaDomain:
     type: http
     behavior: domain
@@ -488,7 +496,10 @@ rules:
   - RULE-SET,Epic,🎮 游戏平台
   # --- GFW 与国内兜底 ---
   - RULE-SET,ProxyGFW,🚀 节点选择
+  # --- 国内直连补漏：未进任何规则集的国内域名（如公司 IdP） ---
+  - DOMAIN-SUFFIX,jyipm.com,🎯 全球直连
+  - RULE-SET,ChinaZHT,🎯 全球直连
   - RULE-SET,ChinaDomain,🎯 全球直连
   - RULE-SET,ChinaCompanyIp,🎯 全球直连,no-resolve
-  - GEOIP,CN,🎯 全球直连,no-resolve
+  - GEOIP,CN,🎯 全球直连
   - MATCH,🐟 漏网之鱼
